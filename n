@@ -1,0 +1,28 @@
+url = "https://www.netflix.com/Login?locale=es-CL"
+login = "alinefmax@hotmail.com"
+password = "La machine"
+import ClientForm
+import urllib2
+request = urllib2.Request(url)
+response = urllib2.urlopen(request)
+forms = ClientForm.ParseResponse(response, backwards_compat=False)
+form = forms[0]
+print "form:", form
+control = form.find_control("action", type="hidden")
+print "control.name, control.value, control.type:", control.name, control.value, control.type
+control.readonly = False
+control.value = login
+control.readonly = True
+print "control.name, control.value, control.type:", control.name, control.value, control.type
+control = form.find_control("password", type="password")
+print "control.name, control.value, control.type:", control.name, control.value, control.type
+control.value = password
+print "control.name, control.value, control.type:", control.name, control.value, control.type
+request2 = form.click()  # urllib2.Request object
+try:
+    response2 = urllib2.urlopen(request2)
+except urllib2.HTTPError, response2:
+    print "error here"
+me = response2.read()
+with open("n.html","w") as file:
+	file.write(me)
